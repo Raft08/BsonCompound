@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+group = 'be.raft.compound'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    maven {
+        name 'AtlasRepository - Public'
+        url "https://repository.atlasworld.fr/repository/maven-public/"
+    }
+}
