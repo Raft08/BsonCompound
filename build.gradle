@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    implementation "fr.atlasworld.common:common:${atlascommon_version}"
+    implementation "fr.atlasworld.common:common:${atlas_common_version}"
     implementation "org.mongodb:bson:${bson_version}"
 }
 
