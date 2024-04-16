@@ -1,13 +1,87 @@
 plugins {
     id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'maven-publish'
+
+    id 'org.ajoberstar.grgit' version '5.2.1'
 }
 
-group = 'be.raft.compound'
-version = '1.0-SNAPSHOT'
+group = "${project_group}"
+version = "${project_version}"
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
 repositories {
     maven {
         name 'AtlasRepository - Public'
         url "https://repository.atlasworld.fr/repository/maven-public/"
+    }
+}
+
+dependencies {
+    implementation "fr.atlasworld.common:common:${atlascommon_version}"
+    implementation "org.mongodb:bson:${bson_version}"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    boolean isSnapshot = System.getenv("RELEASE") != 'true';
+
+    repositories {
+        maven {
+            name 'AtlasWorld-Repository'
+
+            def release = "https://repository.atlasworld.fr/repository/maven-release/"
+            def snapshot = "https://repository.atlasworld.fr/repository/maven-snapshot/"
+
+            url = isSnapshot ? snapshot : release
+            credentials {
+                username = System.getenv("AW_REPO_USERNAME")
+                password = System.getenv("AW_REPO_PASSWORD")
+            }
+        }
+    }
+
+    publications {
+        jar(MavenPublication) {
+            from components.java
+
+            artifactId 'bson'
+
+            def snapshot = "${project_version}-${grgit.head().id.subSequence(0, 5)}"
+
+            try {
+                version = isSnapshot ? snapshot : grgit.tag.list().get(0).getName();
+            } catch (IndexOutOfBoundsException e) {
+                version = "undefined"
+            }
+
+            pom {
+                name = 'BsonCompound'
+                description = "BSON binding for AtlasCommon's Compound Data."
+                licenses {
+                    license {
+                        name = 'GPL-2'
+                    }
+                }
+            }
+        }
     }
 }
