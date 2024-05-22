@@ -65,7 +65,7 @@ public abstract class BsonCompoundElement implements CompoundElement {
 
     @Override
     public BsonCompoundObject getAsObject() {
-        if (this.isArray())
+        if (this.isObject())
             return (BsonCompoundObject) this;
 
         throw new IllegalStateException("Not a CompoundObject: " + this);
