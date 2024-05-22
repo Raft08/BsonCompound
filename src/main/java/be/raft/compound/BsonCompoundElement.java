@@ -1,6 +1,7 @@
 package be.raft.compound;
 
 import fr.atlasworld.common.compound.CompoundElement;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,9 @@ public abstract class BsonCompoundElement implements CompoundElement {
 
         if (object instanceof Collection<?> collection)
             return new BsonCompoundArray(new ArrayList<>(collection));
+
+        if (object instanceof Document document)
+            return new BsonCompoundObject(document);
 
         return new BsonCompoundPrimitive(object);
     }
